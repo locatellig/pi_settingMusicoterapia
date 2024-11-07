@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pacient_cad.dart';
 import 'pacient_list.dart';
-import 'func_cad.dart';
+import 'pesquisa_consulta.dart'; // Atualize para a tela de pesquisa de agendamentos
 import 'agendaconsulta.dart';
 
 class ScreenMenu extends StatelessWidget {
@@ -54,21 +54,21 @@ class ScreenMenu extends StatelessWidget {
                       Colors.orangeAccent,
                       PacientList(),
                     ),
-                    // Botão 3 - Cadastro de Funcionário
-                    _buildMenuButton(
-                      context,
-                      'Cadastro de Funcionário',
-                      Icons.badge,
-                      Colors.blueAccent,
-                      FuncCad(),
-                    ),
-                    // Botão 4 - Agendar Consulta
+                    // Botão 3 - Agendar Consulta
                     _buildMenuButton(
                       context,
                       'Agendar Consulta',
                       Icons.calendar_today,
                       Colors.pinkAccent,
                       AgendaConsulta(),
+                    ),
+                    // Botão 4 - Pesquisa de Agendamentos
+                    _buildMenuButton(
+                      context,
+                      'Pesquisa de Agendamentos',
+                      Icons.search,
+                      Colors.blueAccent,
+                      PesquisaConsulta(), // Substitua por sua tela de pesquisa de agendamentos
                     ),
                   ],
                 ),

@@ -39,12 +39,14 @@ class _PacientCadState extends State<PacientCad> {
   // Variáveis adicionais
   String sexo = 'Masculino';
   bool prematuro = false;
+  String? pacienteId;
 
   @override
   void initState() {
     super.initState();
     if (widget.paciente != null) {
       _loadPatientData(widget.paciente!);
+      pacienteId = widget.pacienteId;
     }
   }
 
@@ -76,11 +78,11 @@ class _PacientCadState extends State<PacientCad> {
     }
 
     try {
-      if (widget.pacienteId != null) {
+      if (pacienteId != null) {
         // Atualizar paciente existente
         await FirebaseFirestore.instance
             .collection('pacientes')
-            .doc(widget.pacienteId)
+            .doc(pacienteId)
             .update({
           'dataAdmissao': dataAdmissaoController.text,
           'nome': nomeController.text,
@@ -106,7 +108,9 @@ class _PacientCadState extends State<PacientCad> {
         );
       } else {
         // Adicionar novo paciente
-        await FirebaseFirestore.instance.collection('pacientes').add({
+        DocumentReference docRef = await FirebaseFirestore.instance
+            .collection('pacientes')
+            .add({
           'codigo': codigo,
           'dataAdmissao': dataAdmissaoController.text,
           'nome': nomeController.text,
@@ -127,6 +131,7 @@ class _PacientCadState extends State<PacientCad> {
           'complemento': complementoController.text,
           'cep': cepController.text,
         });
+        pacienteId = docRef.id;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Dados salvos com sucesso!')),
         );
@@ -164,7 +169,7 @@ class _PacientCadState extends State<PacientCad> {
 
   // Função para excluir dados do Firestore
   Future<void> _deletePatientData() async {
-    if (widget.pacienteId == null) {
+    if (pacienteId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Paciente não encontrado!')),
       );
@@ -174,7 +179,7 @@ class _PacientCadState extends State<PacientCad> {
     try {
       await FirebaseFirestore.instance
           .collection('pacientes')
-          .doc(widget.pacienteId)
+          .doc(pacienteId)
           .delete();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Dados excluídos com sucesso!')),
@@ -208,6 +213,7 @@ class _PacientCadState extends State<PacientCad> {
     cepController.clear();
     sexo = 'Masculino';
     prematuro = false;
+    pacienteId = null;
     setState(() {});
   }
 
@@ -219,6 +225,7 @@ class _PacientCadState extends State<PacientCad> {
     );
     if (selectedPatient != null) {
       _loadPatientData(selectedPatient.data() as Map<String, dynamic>);
+      pacienteId = selectedPatient.id;
     }
   }
 
@@ -269,7 +276,7 @@ class _PacientCadState extends State<PacientCad> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                                    SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
@@ -441,7 +448,7 @@ class _PacientCadState extends State<PacientCad> {
                   Text('Contato e Endereço',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
+                                    SizedBox(height: 20),
                   TextField(
                       controller: telefoneController,
                       decoration: InputDecoration(
